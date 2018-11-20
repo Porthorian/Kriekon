@@ -43,7 +43,7 @@ class UserController extends Controller {
 									$response = $_POST['g-recaptcha-response'];
 									$url = 'https://www.google.com/recaptcha/api/siteverify';
 									$data = array(
-										'secret' => '6Lf4ikwUAAAAAGrfM2ESOzkNxKsIrhT0gw8HCHrm',
+										'secret' => 'your-site-key',
 										'response' => $_POST['g-recaptcha-response']
 									);
 									$options = array(
@@ -130,7 +130,7 @@ class UserController extends Controller {
 							$response = $_POST['g-recaptcha-response'];
 							$url = 'https://www.google.com/recaptcha/api/siteverify';
 							$data = array(
-								'secret' => '6Lf4ikwUAAAAAGrfM2ESOzkNxKsIrhT0gw8HCHrm',
+								'secret' => 'your-site-key',
 								'response' => $_POST['g-recaptcha-response']
 							);
 							$options = array(
