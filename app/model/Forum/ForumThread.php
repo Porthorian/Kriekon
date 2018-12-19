@@ -43,6 +43,7 @@ class ForumThread extends Model
 		
 		$threadArray = array(
 			'thread_id'=>$this->getThreadID(),
+			'user_id'=>$this->getThreadUserID(),
 			'category_id'=>$this->getThreadCategoryID(),
 			'category_name'=>$category->getCategoryName(),
 			'thread_author'=>$user->getUserArray(),
@@ -191,17 +192,11 @@ class ForumThread extends Model
 
 			$this->setThreadModTime(date('Y-m-d H:i:s', time()));
 
-			// Update sub category name!
 			$db->update('forum_thread', ['thread_id'=>$this->getThreadID()],[
 				'category_id'=>$this->getThreadCategoryID(),
-				'user_id'=>$this->getThreadUserID(),
-				'thread_author'=>$this->getThreadAuthor(),
 				'thread_subject'=>$this->getThreadSubject(),
 				'thread_description'=>$this->getThreadDescription(),
 				'thread_content'=>$this->getThreadContent(),
-				'thread_upvotes'=>$this->getThreadUpvotes(),
-				'thread_downvotes'=>$this->getThreadDownvotes(),
-				'thread_date'=>$this->getThreadDate(),
 				'thread_modTime'=>$this->getThreadModTime()
 				]);
 
@@ -216,6 +211,12 @@ class ForumThread extends Model
 		try 
 		{
 			$db = Database::getDBI();
+			
+			if($this->countReplies() > 0)
+				$db->delete('forum_replies', ['thread_id'=>$this->getThreadID()]);
+			
+			if($this->getThreadUpvotes() > 0 || $this->getThreadDownvotes() > 0)
+				$db->delete('forum_upvote_downvote', ['thread_id'=>$this->getThreadID()]);
 			
 			$db->delete('forum_thread', ['thread_id'=>$this->getThreadID()]);
 		} 

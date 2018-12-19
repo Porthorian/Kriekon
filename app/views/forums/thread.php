@@ -32,10 +32,14 @@
             <div class="dropdown float-right">
               <a class="btn btn-secondary" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Settings <i class="fa fa-cog"></i></a>
               <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="forum-create.html">Edit Post</a>
+				<?php if($data[0]['user_view']['user_id'] == $data['thread']['user_id']): ?>
+                <a class="dropdown-item" href="<?= $https . '/forum/edit_thread/' . $data['thread']['thread_id']; ?>">Edit Post</a>
+				<?php endif; ?>
                 <a class="dropdown-item" href="#">Mute Post</a>
-                <a class="dropdown-item" href="forum-create.html">New Post</a>
-                <a class="dropdown-item" href="#">Close Thread</a>
+                <a class="dropdown-item" href="<?= $https . '/forum/create_thread'; ?>">New Post</a>
+				<?php if($data[0]['user_view']['user_id'] == $data['thread']['user_id']): ?>
+                <a class="dropdown-item" href="<?= $https . '/forum/thread/' . $data['thread']['thread_id'] . '/' . $data['thread']['thread_url_title'] . '/?action=delete'; ?>">Close Thread</a>
+				<?php endif; ?>
               </div>
             </div>
           </div>

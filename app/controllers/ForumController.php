@@ -209,6 +209,15 @@ class ForumController extends Controller
 						}
 					}
 				}
+				elseif($_GET['action'] == 'delete')
+				{
+					if($user->getUserID() == $thread->getThreadUserID())
+					{
+						
+						$thread->delete();
+						header("Location: /forum");
+					}
+				}
 			}
 			
 			$this->view('forums/thread', ['forum_name'=>$forum->getForumName(), 'thread'=>$thread->getThreadArray(), 'replies'=>$replies_array]);
@@ -228,9 +237,8 @@ class ForumController extends Controller
 			{
 				$category = $this->model('Forum/ForumCategory');
 				$category->fetchCategoryInfo($category_id);
-				$number_of_threads = $category->count();
 
-				$categories[] = array('category_id'=>$category->getCategoryID(), 'category_name'=>$category->getCategoryName(), 'category_description'=>$category->getCategoryDescription(), 'number_of_threads'=>$number_of_threads, 'category_url_title'=>$category->getCategoryUrlTitle());
+				$categories[] = array('category_id'=>$category->getCategoryID(), 'category_name'=>$category->getCategoryName(), 'category_description'=>$category->getCategoryDescription(), 'category_url_title'=>$category->getCategoryUrlTitle());
 			}
 			
 			if(isset($_GET['action']))
@@ -272,6 +280,67 @@ class ForumController extends Controller
 			}
 		}
 		else
-			header("Location: /home/login");
+			header("Location: /user/login");
+	}
+	
+	public function edit_thread($thread_id)
+	{
+		if(isset($_SESSION[Config::get('session/user_session')]))
+		{
+			$thread = $this->model('Forum/ForumThread');
+			$user = $this->model('User');
+			$user = unserialize($_SESSION[Config::get('session/user_session')]);
+			
+			$thread->fetchThreadInfo($thread_id);
+			
+			if($user->getUserID() == $thread->getThreadUserID())
+			{
+				$forum = $this->model('Forum/Forum');
+				$forum->fetchForumInfo("Kriekon");
+				$forum->fetchForumCategories();
+
+				foreach($forum->getForumCategories() as $category_id)
+				{
+					$category = $this->model('Forum/ForumCategory');
+					$category->fetchCategoryInfo($category_id);
+
+					$categories[] = array('category_id'=>$category->getCategoryID(), 'category_name'=>$category->getCategoryName(), 'category_description'=>$category->getCategoryDescription(), 'category_url_title'=>$category->getCategoryUrlTitle());
+				}
+				
+				if(isset($_GET['action']))
+				{
+					if($_GET['action'] == 'edit')
+					{
+						if($this->checkToken(Input::get('thread_token')))
+						{
+							$thread_subject = filter_var(Input::get('thread_subject'), FILTER_SANITIZE_STRING);
+							$thread_description = filter_var(Input::get('thread_description'), FILTER_SANITIZE_STRING);
+							$thread_category_id = filter_var(Input::get('thread_category'), FILTER_SANITIZE_NUMBER_INT);
+							$thread_content = Input::get('thread_content');
+
+
+							if($user->fetchUserInfo() == true) //Checks to see if user actually exists
+							{
+								$thread->setThreadSubject($thread_subject);
+								$thread->setThreadDescription($thread_description);
+								$thread->setThreadCategoryID($thread_category_id);
+								$thread->setThreadContent($thread_content);
+								$thread->update();
+								
+								$url_title = Functions::adjustStringSEO($thread->getThreadSubject());
+
+								header('Location: /forum/thread/' . $thread_id . '/' . $url_title);
+							}
+						}
+					}
+				}
+				else
+					$this->view('forums/edit_thread', ['thread'=>$thread->getThreadArray(), 'categories'=>$categories]);
+			}
+			else
+				header('Location: /forum/thread/' . $thread_id . '/' . Functions::adjustStringSEO($thread->getThreadSubject()));
+		}
+		else
+			header("Location: /user/login");
 	}
 }

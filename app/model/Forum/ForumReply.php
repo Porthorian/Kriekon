@@ -108,4 +108,14 @@ class ForumReply extends Model
 		}
 		catch (Exception $e) { echo $e->getMessage(); }
 	}
+	
+	public function delete()
+	{
+		try
+		{
+			$db = Database::getDBI();
+			$db->delete('forum_replies', ['reply_id'=>$this->getReplyID()]);
+			
+		} catch(Exception $e) { echo $e->getMessage(); }
+	}
 }
