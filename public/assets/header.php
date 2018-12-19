@@ -8,9 +8,9 @@
             <a href="<?= $https; ?>" class="logo"><img style="height:28px; width:110px;" src="<?= $images . '/logo.png'; ?>" alt="Kriekon - Gaming Community"></a>
 			<?php
 				  if(isset($_SESSION['user'])):
-					$user = $this->model('User');
+					$user = Controller::model('User');
 					$user = unserialize($_SESSION[Config::get('session/user_session')]);
-			
+
 					if(!empty($user->getTags())):
 				  	if(in_array("Admin", $user->getTags())):
 					?>

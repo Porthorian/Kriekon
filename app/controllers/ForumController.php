@@ -154,7 +154,21 @@ class ForumController extends Controller
 				$reply_user = $this->model('User');
 				$reply_user->fetchUserInfo($reply->getReplyUserID());
 				
-				$replies_array[] = array('reply_id'=>$reply->getReplyID(), 'reply_date'=>Functions::getDateArray($reply->getReplyDate()), 'adjusted_time'=>Functions::getTimeAdjustment($reply->getReplyDate()), 'reply_author'=>$reply_user->getUserArray(), 'reply_content'=>$reply->getReplyContent());
+				$reply_children = array();
+				$reply->fetchReplyChildren($reply_id);
+				
+				foreach($reply->getReplyChildren() as $child_reply_id)
+				{
+					$child = $this->model('Forum/ForumReply');
+					$child->fetchReplyInfo($child_reply_id);
+					
+					$child_user = $this->model('User');
+					$child_user->fetchUserInfo($child->getReplyUserID());
+					
+					$reply_children[] = array('reply_id'=>$child->getReplyID(), 'reply_date'=>Functions::getDateArray($child->getReplyDate()), 'adjusted_time'=>Functions::getTimeAdjustment($child->getReplyDate()), 'reply_author'=>$child_user->getUserArray(), 'reply_content'=>$child->getReplyContent());
+				}
+				
+				$replies_array[] = array('reply_id'=>$reply->getReplyID(), 'reply_date'=>Functions::getDateArray($reply->getReplyDate()), 'adjusted_time'=>Functions::getTimeAdjustment($reply->getReplyDate()), 'reply_author'=>$reply_user->getUserArray(), 'reply_content'=>$reply->getReplyContent(), 'children'=>$reply_children);
 			}
 			
 			if(isset($_GET['action']))
@@ -168,6 +182,25 @@ class ForumController extends Controller
 							$reply = $this->model('Forum/ForumReply');
 							$reply->setReplyThreadID($thread->getThreadID());
 							$reply->setReplyUserID($user->getUserID());
+							$reply->setReplyParentID(0);
+							$reply->setReplyAuthor($user->getUserUsername());
+							$reply->setReplyContent(Input::get('reply_content'));
+							$reply->create();
+							
+							header('Location: /forum/thread/' . $id . '/' . $name); //TODO Ajax Post Request
+						}
+					}
+				}
+				elseif($_GET['action'] == 'create_child')
+				{
+					if($this->checkToken(Input::get('reply_token')))
+					{
+						if($user->fetchUserInfo() == true) //Checks to see if user actually exists
+						{
+							$reply = $this->model('Forum/ForumReply');
+							$reply->setReplyThreadID($thread->getThreadID());
+							$reply->setReplyUserID($user->getUserID());
+							$reply->setReplyParentID(Input::get('reply_parent_id'));
 							$reply->setReplyAuthor($user->getUserUsername());
 							$reply->setReplyContent(Input::get('reply_content'));
 							$reply->create();

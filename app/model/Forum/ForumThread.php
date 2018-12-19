@@ -37,9 +37,12 @@ class ForumThread extends Model
 		$category = Controller::model('Forum/ForumCategory');
 		$category->fetchCategoryInfo($this->getThreadCategoryID());
 		
-		$vote_count = $this->getThreadUpvotes() - $this->getThreadDownvotes();
+		$trending = Controller::model('TrendingSystem');
+		
+		$vote_count = $trending->getScore($this->getThreadID());
+		
 		$threadArray = array(
-			'thread_id'=>$this->getThreadId(),
+			'thread_id'=>$this->getThreadID(),
 			'category_id'=>$this->getThreadCategoryID(),
 			'category_name'=>$category->getCategoryName(),
 			'thread_author'=>$user->getUserArray(),
@@ -102,9 +105,12 @@ class ForumThread extends Model
 				$this->setThreadDescription($results->thread_description);
 				$this->setThreadContent($results->thread_content);
 				$this->setThreadDate($results->thread_date);
-				$this->setThreadUpvotes($results->thread_upvotes);
-				$this->setThreadDownvotes($results->thread_downvotes);
 				$this->setThreadModTime($results->thread_modTime);
+				
+				$trending = Controller::model('TrendingSystem');
+				
+				$this->setThreadUpvotes($trending->getUpvotes($this->getThreadID()));
+				$this->setThreadDownvotes($trending->getDownvotes($this->getThreadID()));
 			}
 		} catch (Exception $e) {
 			echo $e->getMessage();
@@ -129,9 +135,9 @@ class ForumThread extends Model
 			$db = Database::getDBI();
 			
 			if($limit != null)
-				$sql = 'SELECT reply_id FROM forum_replies WHERE thread_id = ? ORDER BY reply_date DESC LIMIT '. $limit;
+				$sql = 'SELECT reply_id FROM forum_replies WHERE thread_id = ? AND reply_parent_id = 0 ORDER BY reply_date DESC LIMIT '. $limit;
 			else
-				$sql = 'SELECT reply_id FROM forum_replies WHERE thread_id = ? ORDER BY reply_date DESC LIMIT 10';
+				$sql = 'SELECT reply_id FROM forum_replies WHERE thread_id = ? AND reply_parent_id = 0 ORDER BY reply_date DESC LIMIT 10';
 			$db->query($sql, array($this->getThreadID()));
 			$results = $db->results('arr');
 			

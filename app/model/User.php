@@ -230,7 +230,7 @@ class User extends Model
 					//'user_timezone'=>$timezone,
 										 ]);
 					
-					//Once Email Server and Verification is added, this will be changed, as we want Verified accounts to be considered "Register Users" aka Memebers
+					//Once Email Server and Verification is added, this will be changed, as we want Verified accounts to be considered "Register Users" aka Members
 					$db->insert('tag_user', [
 						'tag_id'=>7,
 						'user_id'=>$db->lastId()
@@ -239,11 +239,9 @@ class User extends Model
 					echo "Error registering" . $e->getMessage();
 				}
 			}
-
-			} catch(Exception $e)
-			{
-				echo $e->getMessage();
-			}
+		} catch(Exception $e) {
+			echo $e->getMessage();
+		}
 	}
 	
 	public function login($email, $password)
@@ -313,7 +311,7 @@ class User extends Model
 	{
 		$db = Database::getDBI();
 
-		$sql = 'SELECT tags.tag_name FROM tags JOIN tag_user ON tag_user.tag_id = tags.tag_id WHERE tag_user.user_id = ?';
+		$sql = 'SELECT tags.tag_name FROM tags JOIN tag_user ON tag_user.tag_id = tags.tag_id WHERE tag_user.user_id = ? ORDER BY tags.tag_id ASC';
 		$db->query($sql, ['user_id'=>$this->getUserID()]);
 		$results = $db->results('arr');
 

@@ -165,7 +165,7 @@ class Database {
             $pos++;
         }
         $sql = "INSERT INTO {$table} ({$set}) VALUES ({$set2})";
-        // Functions::dump($sql);
+
         if(!$this->query($sql)->error()) {
             $this->_count = $this->rowCount();
             return true;

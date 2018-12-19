@@ -5883,7 +5883,7 @@ div.dataTables_wrapper div.dataTables_length select {
   position: absolute;
   top: 38px;
   right: 0px;
-  padding: 0;
+  padding: 1% 13%;
   border-radius: 50%;
   width: 26px;
   height: 26px;
@@ -5927,15 +5927,14 @@ div.dataTables_wrapper div.dataTables_length select {
 }
 
 .comments > ul li .comment > div.comment-post .comment-author > span {
-  font-size: 14px;
-  display: inline-block;
-  margin-right: 10px;
-  padding-right: 10px;
+	font-size: 11px;
+	display: inline-block;
+	margin-right: 10px;
+	padding: 5px 10px 5px 10px;
 }
 
 .comments > ul li .comment > div.comment-post .comment-author > span:before {
   color: #9c9c9c;
-  content: "\002022";
   margin: 0 5px 0 0;
   display: inline-block;
 }
@@ -5963,6 +5962,14 @@ div.dataTables_wrapper div.dataTables_length select {
 
 .comments > ul li .comment > div.comment-post .comment-action .dropdown.show {
   display: inline-block;
+}
+
+.comment-meta {
+	padding-top: 25px;
+}
+
+.comment-meta span {
+	font-size: 14px;
 }
 
 .comments > ul li .comment > div.comment-post .comment-footer {
@@ -6017,6 +6024,10 @@ div.dataTables_wrapper div.dataTables_length select {
   width: 100% !important;
 }
 
+.reply-child-btn {
+	background: none;
+    color: inherit;
+}
 .post {
   margin-bottom: 30px;
   padding-bottom: 15px;
