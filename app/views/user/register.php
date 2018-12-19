@@ -19,7 +19,7 @@
               <h4 class="card-title"><i class="fa fa-user-plus"></i> Register a new account</h4>
             </div>
             <div class="card-block">
-              <form action="<?= $https . '/user/register'; ?>" method="POST" autocomplete="false" id="registration-form">
+              <form action="<?= $https . '/user/register/?action=register'; ?>" method="POST" autocomplete="false" id="registration-form">
 				<!--<div class="form-group input-icon-left m-b-10">
                   <i class="fa fa-child"></i>
                   <input type="text" name="register_firstname" data-sanitize="capitalize" data-validation="alphanumeric length" data-validation-length="2-32" data-validation-error-msg="(2-32 chars)" id="firstname" class="form-control form-control-secondary" placeholder="Firstname" autocomplete="false" required>
@@ -61,7 +61,7 @@
 					<span class="custom-control-description">Subscribe to monthly newsletter</span>
               	</label>-->
                 <label class="custom-control custom-checkbox custom-checkbox-primary">
-					<input type="checkbox" class="custom-control-input" data-validation="checkbox_group" data-validation-qty="min1" required>
+					<input type="checkbox" class="custom-control-input" data-validation="checkbox_group" data-validation-qty="min1" name="checkbox_acceptance" required>
 					<span class="custom-control-indicator"></span>
 					<span class="custom-control-description">Accept <a href="#" data-toggle="modal" data-target="#terms">terms of service</a></span>
               	</label>
