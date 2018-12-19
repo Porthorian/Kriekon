@@ -82,79 +82,76 @@ class AjaxController extends Controller
 		{
 			if(isset($_POST['post_type']))
 			{
-				switch($_POST['post_type'])
+				if($_POST['post_type'] == 'thread')
 				{
-					case 'thread':
-						$thread = $this->model('Forum/ForumThread');
-						$thread->fetchThreadInfo($post_id);
-
-						if($_POST['upvote_downvote'] == 'upvote')
-						{
-							// Create the array we are returning.
-							$result = [];
-
-							// Check to see if the user has liked/disliked before, this will be a bool.
-							$result[0] = $trending->checkUpvotes(Input::get('user_id'), $thread->getThreadID());
-							// Return the button type, this will help chose class changes.
-							$result[1] = $_POST['button_type'];
-							// For some reason when we pass between it requires the data to be turned into a string. 
-							// We are simply changing it back here.
-
-							$trending->increaseUpvotes(Input::get('user_id'), Input::get('post_id'));
-							$result[2] = (int)$thread->getThreadUpvotes();
-							//Has been upvoted by user
-							if($result[0] == 'true'){
-								$result[0] = true;
-							}
-							//Has not been upvoted by user
-							else 
-							{
-								$result[0] = false;
-							}
-							// Encode it into something Javascript can read.
-							$result[3] = (int)$trending->getScore($thread->getThreadID());
-							echo json_encode($result);
-							return;
-						} 
-						elseif ($_POST['upvote_downvote'] == 'downvote') 
-						{					
-							// Create the array we are returning.
-							$result = [];
-							// Check to see if the user has liked/disliked before, this will be a bool.
-							$result[0] = $trending->checkDownvotes(Input::get('user_id'), $thread->getThreadID());
-							// Return the button type, this will help chose class changes.
-							$result[1] = $_POST['button_type'];
-							// For some reason when we pass between it requires the data to be turned into a string. 
-							// We are simply changing it back here.
-
-							$trending->increaseDownvotes(Input::get('user_id'), Input::get('post_id'));
-							// Return the number of dislikes.
-							$result[2] = (int)$thread->getThreadDownvotes();
-							if($result[0] == 'true'){
-								$result[0] = true;
-							} 
-							else 
-							{
-								$result[0] = false;
-							}
-							// Encode it into something Javascript can read.
-							$result[3] = (int)$trending->getScore($thread->getThreadID());
-							echo json_encode($result);
-							return;
-						}
-						else
-						{
-							echo json_encode("I never made it");
-						}
-					break;
-						
-					case 'article':
-						$article = $this->model('Article/Article');
-						$article->fetchArticleInfo($post_id);
-					break;
+					$thread = $this->model('Forum/ForumThread');
+					$thread->fetchThreadInfo($post_id);
 					
-					case 'thread_reply':
-					break;
+					if($_POST['upvote_downvote'] == 'upvote')
+					{
+						// Create the array we are returning.
+						$result = [];
+						// Return the number of likes.
+						$result[0] = $thread->getThreadUpvotes();
+						// Check to see if the user has liked/disliked before, this will be a bool.
+						$result[1] = $trending->checkUpvotes(Input::get('user_id'), $thread->getThreadID());
+						// Return the button type, this will help chose class changes.
+						$result[2] = $_POST['button_type'];
+						// For some reason when we pass between it requires the data to be turned into a string. 
+						// We are simply changing it back here.
+						
+						//Has been upvoted by user
+						if($result[1] == 'true'){
+							$result[1] = true;
+						}
+						//Has not been upvoted by user
+						else 
+						{
+							$trending->increaseUpvotes(Input::get('user_id'), Input::get('post_id'));
+							$thread->setThreadUpvotes($thread->getThreadUpvotes() + 1);
+							$thread->update();
+							
+							$result[1] = false;
+						}
+						// Encode it into something Javascript can read.
+						echo json_encode($result);
+						return;
+					} elseif ($_POST['upvote_downvote'] == 'downvote') 
+					{
+						// Create the array we are returning.
+						$result = [];
+						// Return the number of dislikes.
+						$result[0] = $thread->getThreadDownvotes();
+						// Check to see if the user has liked/disliked before, this will be a bool.
+						$result[1] = $trending->checkDownvotes(Input::get('user_id'), $thread->getThreadID());
+						// Return the button type, this will help chose class changes.
+						$result[2] = $_POST['button_type'];
+						// For some reason when we pass between it requires the data to be turned into a string. 
+						// We are simply changing it back here.
+						if($result[1] == 'true'){
+							$result[1] = true;
+						} 
+						else 
+						{
+							$trending->increaseDownvotes(Input::get('user_id'), Input::get('post_id'));
+							$thread->setThreadDownvotes($thread->getThreadDownvotes() + 1);
+							$thread->update();
+							
+							$result[1] = false;
+						}
+						// Encode it into something Javascript can read.
+						echo json_encode($result);
+						return;
+					}
+					else
+					{
+						echo json_encode("I never made it");
+					}
+				}
+				elseif($_POST['post_type'] == 'article')
+				{
+					$article = $this->model('Article/Article');
+					$article->fetchArticleInfo($post_id);
 				}
 			}
 		}

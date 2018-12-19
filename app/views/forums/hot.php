@@ -31,31 +31,34 @@
 					<h5 class="widget-title">Feeds</h5>
 					<div class="forum-sidebar-content">
 						<ul>
-							<?php $categories = $data['categories']; 
-							foreach($categories as $category): ?>
-							<li><a href="<?= $https . '/forum/c/' . $category['category_id'] . '/' . $category['category_url_title']; ?>"><i class="fa fa-comments" style="padding-right: 5px;"></i><?= ucfirst($category['category_name']); ?></a></li>
-							<?php endforeach; ?>
+							<?php $category = $data['categories']; 
+							$count = 0;
+							foreach($category as $categories): ?>
+							<li><a href="<?= $https . '/forum/c/' . $category[$count]['category_id'] . '/' . $category[$count]['category_url_title']; ?>"><i class="fa fa-comments" style="padding-right: 5px;"></i><?= ucfirst($category[$count]['category_name']); ?></a></li>
+							<?php $count++;
+							endforeach; ?>
 						</ul>
 					</div>
 				</div>
 			</div>
 			<div class="col-md-10">
-				<?php $threads = $data['threads'];
-				foreach($threads as $thread): ?>
+				<?php $thread = $data['threads'];
+				$count = 0;
+				foreach($thread as $threads): ?>
 				<div>
 					<div class="forum-content-thread">
 						<div class="forum-upvote-downvote-area">
 							<div class="forum-upvote-downvote-buttons">
-								<button class="forum-upvote-downvote-button" id="upvote_thread_btn-<?= $thread['thread_id']; ?>" onClick="new ldButton('thread', '#upvote_thread_btn-<?= $thread['thread_id']; ?>', 'upvote', '#thread_count-<?= $thread['thread_id']; ?>', <?= $thread['thread_id'] ?>, <?= $data[0]['user_view']['user_id']; ?>, '<?= '/ajax/upvote_downvote/' . $thread['thread_id']; ?>')"><i class="fa fa-arrow-up"></i></button>
-								<div class="forum-upvote-downvote-count" id="thread_count-<?= $thread['thread_id']; ?>"><?= $thread['vote_count']; ?></div>
-								<button class="forum-upvote-downvote-button" id="downvote_thread_btn-<?= $thread['thread_id']; ?>"onClick="new ldButton('thread', '#downvote_thread_btn-<?= $thread['thread_id']; ?>', 'downvote', '#thread_count-<?= $thread['thread_id']; ?>', <?= $thread['thread_id'] ?>, <?= $data[0]['user_view']['user_id']; ?>, '<?= '/ajax/upvote_downvote/' . $thread['thread_id']; ?>')"><i class="fa fa-arrow-down"></i></button>
+								<button class="forum-upvote-downvote-button" id="upvote_thread_btn-<?= $thread[$count]['thread_id']; ?>" onClick="new ldButton('thread', '#upvote_thread_btn-<?= $thread[$count]['thread_id']; ?>', 'upvote', '#thread_count-<?= $thread[$count]['thread_id']; ?>', <?= $thread[$count]['thread_id'] ?>, <?= $data[0]['user_view']['user_id']; ?>, '<?= '/ajax/upvote_downvote/' . $thread[$count]['thread_id']; ?>')"><i class="fa fa-arrow-up"></i></button>
+								<div class="forum-upvote-downvote-count" id="thread_count-<?= $thread[$count]['thread_id']; ?>"><?= $thread[$count]['vote_count']; ?></div>
+								<button class="forum-upvote-downvote-button" id="downvote_thread_btn-<?= $thread[$count]['thread_id']; ?>"onClick="new ldButton('thread', '#downvote_thread_btn-<?= $thread[$count]['thread_id']; ?>', 'downvote', '#thread_count-<?= $thread[$count]['thread_id']; ?>', <?= $thread[$count]['thread_id'] ?>, <?= $data[0]['user_view']['user_id']; ?>, '<?= '/ajax/upvote_downvote/' . $thread[$count]['thread_id']; ?>')"><i class="fa fa-arrow-down"></i></button>
 							</div>
 						</div>
-						<div class="forum-content-background" onClick="location.href='<?= $https . '/forum/thread/' . $thread['thread_id'] . '/' . $thread['thread_url_title']; ?>';">
+						<div class="forum-content-background" onClick="location.href='<?= $https . '/forum/thread/' . $thread[$count]['thread_id'] . '/' . $thread[$count]['thread_url_title']; ?>';">
 							<div class="forum-content-display">
 								<div class="forum-content-image-holder">
 									<div class="forum-content-image-position">
-										<a href="<?= $https . '/forum/thread/' . $thread['thread_id'] . '/' . $thread['thread_url_title']; ?>">
+										<a href="<?= $https . '/forum/thread/' . $thread[$count]['thread_id'] . '/' . $thread[$count]['thread_url_title']; ?>">
 											<div class="forum-content-image">
 												<i class="forum-content-image-placeholder forum-content-image-placeholder-2 fa fa-comments"></i>
 											</div>
@@ -64,15 +67,15 @@
 								</div>
 								<div class="forum-content">
 									<div>
-										<span class="forum-content-title"><a href="<?= $https . '/forum/thread/' . $thread['thread_id'] . '/' . $thread['thread_url_title']; ?>"><h2><?= $thread['thread_subject']; ?></h2></a></span>
+										<span class="forum-content-title"><a href="<?= $https . '/forum/thread/' . $thread[$count]['thread_id'] . '/' . $thread[$count]['thread_url_title']; ?>"><h2><?= $thread[$count]['thread_subject']; ?></h2></a></span>
 									</div>
 									<div class="forum-content-subtitle">
-										<a href="<?= $https . '/forum/c/' . $thread['category_id'] . '/' . $thread['category_url_title']; ?>" class="forum-content-subtitle">c/<?= $thread['category_url_title']; ?></a>
+										<a href="<?= $https . '/forum/c/' . $thread[$count]['category_id'] . '/' . $thread[$count]['category_url_title']; ?>" class="forum-content-subtitle">c/<?= $thread[$count]['category_url_title']; ?></a>
 										<span class="forum-content-subtitle">•</span>
 										<div class="forum-content-subtitle-postblock">
 											<span>Posted By</span> 
-											<a href="<?= $https . '/user/p/' . $thread['thread_author']['user_username']; ?>"><?= ucfirst($thread['thread_author']['user_username']); ?></a>
-											<a href="<?= $https . '/forum/thread/' . $thread['thread_id'] . '/' . $thread['thread_url_title']; ?>"><?= $thread['adjusted_time']; ?></a>
+											<a href="<?= $https . '/user/p/' . $thread[$count]['thread_author']['user_username']; ?>"><?= ucfirst($thread[$count]['thread_author']['user_username']); ?></a>
+											<a href="<?= $https . '/forum/thread/' . $thread[$count]['thread_id'] . '/' . $thread[$count]['thread_url_title']; ?>"><?= $thread[$count]['adjusted_time']; ?></a>
 										</div>
 									</div>
 								</div>
@@ -80,7 +83,8 @@
 						</div>
 					</div>
 				</div>
-				<?php endforeach; ?>
+				<?php $count++;
+				endforeach; ?>
 			</div>
 		</div>
     </div>

@@ -9,10 +9,10 @@ class UserController extends Controller {
 		{
 			if(isset($_GET['action']))
 			{
-				if($_GET['action'] == 'register')
+				if(isset($_GET['register']))
 				{
-					$errors = 1;
-					
+					$errors = null;
+
 					try {
 
 						if($this->checkToken(Input::get('register_token')))
@@ -43,8 +43,8 @@ class UserController extends Controller {
 									$response = $_POST['g-recaptcha-response'];
 									$url = 'https://www.google.com/recaptcha/api/siteverify';
 									$data = array(
-										'secret' => Config::get('google/secret'),
-										'response' => $response
+										'secret' => '6Lf4ikwUAAAAAGrfM2ESOzkNxKsIrhT0gw8HCHrm',
+										'response' => $_POST['g-recaptcha-response']
 									);
 									$options = array(
 										'http' => array (
@@ -54,7 +54,7 @@ class UserController extends Controller {
 									);
 									$context  = stream_context_create($options);
 									$verify = file_get_contents($url, false, $context);
-									$captcha_success = json_decode($verify);
+									$captcha_success=json_decode($verify);
 									if ($captcha_success->success==false) {
 										echo "<p>You are a bot! Go away!</p>";
 									} else if ($captcha_success->success==true) {
@@ -130,8 +130,8 @@ class UserController extends Controller {
 							$response = $_POST['g-recaptcha-response'];
 							$url = 'https://www.google.com/recaptcha/api/siteverify';
 							$data = array(
-								'secret' => Config::get('google/secret'),
-								'response' => $response
+								'secret' => '6Lf4ikwUAAAAAGrfM2ESOzkNxKsIrhT0gw8HCHrm',
+								'response' => $_POST['g-recaptcha-response']
 							);
 							$options = array(
 								'http' => array (

@@ -50,11 +50,12 @@
                 </div>
               </div>
               <div>
+                #1
                 <span><?= $data['thread']['thread_date']['month'] . ' ' . $data['thread']['thread_date']['day'] . ', ' . $data['thread']['thread_date']['year']; ?></span>
               </div>
             </div>
             <div class="forum-body">
-              <?= $data['thread']['thread_content']; ?>
+              <p><?= $data['thread']['thread_content']; ?></p>
 <!--              <div class="forum-thumbnail">
                 <div class="video-play" data-src="https://www.youtube.com/embed/ST262ZbNcos?rel=0&amp;amp;autoplay=1&amp;amp;showinfo=0">
                   <div class="embed-responsive embed-responsive-16by9">
@@ -100,7 +101,7 @@
           <form action="<?= $https . '/forum/thread/' . $data['thread']['thread_id'] . '/' . $data['thread']['thread_url_title'] . '/?action=create_reply'; ?>" method="POST">
 			<textarea class="summernote" name="reply_content"></textarea>
 			<input type="hidden" value="<?php echo $_SESSION[Config::get('session/token_name')]; ?>" name="reply_token"/>
-			<button class="btn btn-primary btn-shadow float-right" type="submit">Submit</button>
+			<button class="btn btn-primary btn-shadow float-right" type="submit" name="save">Submit</button>
           </form>
           <div class="clearfix m-t-30 m-b-20">
             <h5 class="m-t-10 m-b-0 float-left"><i class="fa fa-comment-o m-r-5"></i> Replies (<?= $data['thread']['reply_count']; ?>)</h5>
@@ -114,89 +115,41 @@
               </div>
             </div>
           </div>
-		  <div id="comments" class="comments anchor">
           <ul>
-			  <?php
-			  $replies = $data['replies'];
-			  foreach($replies as $reply): ?>
-			  <li>
-                <div class="comment">
-                  <div class="comment-avatar">
-                    <a href="<?= $https . '/user/p/' . $reply['reply_author']['user_username']; ?>"><img src="<?= $images .'/user/user-1.jpg'; ?>" alt=""></a>
-                    <a class="badge badge-primary" href="profile.html" data-toggle="tooltip" data-placement="bottom" title="Add as friend"><i class="fa fa-user-plus"></i></a>
+			<?php $reply = $data['replies']; 
+			  $x = 0;
+			  foreach($reply as $replies): ?>
+            <li class="forum-reply">
+              <div class="forum-header">
+                <div>
+                  <a href="<?= $https . '/user/p/' . $reply[$x]['reply_author']['user_username']; ?>"><img src="<?= $images . '/user/user-2.jpg'; ?>" alt=""></a>
+                </div>
+                <div>
+                  <div class="forum-title">
+                    <h5><a href="<?= $https . '/user/p/' . $reply[$x]['reply_author']['user_username']; ?>"><?= ucfirst($reply[$x]['reply_author']['user_username']); ?></a></h5>
+					<?php if(in_array("Admin", $reply[$x]['reply_author']['user_tags'])): ?>
+						<span class="badge badge-outline-primary">Admin</span>
+					<?php endif; ?>
                   </div>
-                  <div class="comment-post">
-                    <div class="comment-header">
-                      <div class="comment-author">
-                        <h5><a href="<?= $https . '/user/p/' . $reply['reply_author']['user_username']; ?>"><?= ucfirst($reply['reply_author']['user_username']); ?></a></h5>
-                        <span <?php if(in_array("Admin", $reply['reply_author']['user_tags'])): ?>class="badge badge-outline-primary"<?php endif; ?>><?= $reply['reply_author']['user_tags'][0]; ?></span>
-                      </div>
-                      <div class="comment-action">
-                        <div class="dropdown float-right">
-                          <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-chevron-down"></i></a>
-                          <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#">Moderate</a>
-                            <a class="dropdown-item" href="#">Embed</a>
-                            <a class="dropdown-item" href="#">Report</a>
-                            <a class="dropdown-item" href="#">Mark as spam</a>
-                          </div>
-                        </div>
-                      </div>
-						<div class="comment-meta">
-							<span><?= $reply['reply_author']['thread_reply_count']; ?> Posts</span>
-						</div>
-                    </div>
-                    <?= $reply['reply_content']; ?>
-                    <div class="comment-footer">
-                      <ul>
-                        <li><a href="#"><i class="fa fa-heart-o"></i> Like</a></li>
-                        <li><button class="reply-child-btn" onClick="new child_reply('<?= $https; ?>', '<?= $https . '/forum/thread/' . $data['thread']['thread_id'] . '/' . $data['thread']['thread_url_title'] . '/?action=create_child'; ?>', '<?= ucfirst($reply['reply_author']['user_username']); ?>', '<?php echo $_SESSION[Config::get('session/token_name')]; ?>', '<?= $reply['reply_id']; ?>')"><i class="icon-reply"></i> Reply</button></li>
-                        <li><a href="#"><i class="fa fa-clock-o"></i> <?= $reply['adjusted_time']; ?></a></li>
-                      </ul>
-                    </div>
+                  <div class="forum-meta">
+                    <span><?= $reply[$x]['reply_author']['thread_reply_count']; ?> Posts</span>
+					<?php if(count($reply[$x]['reply_author']['user_tags']) >= 2): ?>
+                    <span><?= $reply[$x]['reply_author']['user_tags'][1]; ?></span>
+					<?php else: ?>
+					<span><?= $reply[$x]['reply_author']['user_tags'][0]; ?></span>
+					<?php endif; ?>
+                    <span><a href="#"><i class="fa fa-mail-reply-all"></i> Reply</a></span>
                   </div>
                 </div>
-                <ul>
-					<?php 
-					$child_replies = $reply['children'];
-					foreach($child_replies as $child_reply): ?>
-                  <li>
-                    <div class="comment">
-                      <div class="comment-avatar"><img src="<?= $images . '/user/user-2.jpg'; ?>" alt=""></div>
-                      <div class="comment-post">
-                        <div class="comment-header">
-                          <div class="comment-author">
-                            <h5><a href="<?= $https . '/user/p/' . $child_reply['reply_author']['user_username']; ?>"><?= ucfirst($child_reply['reply_author']['user_username']); ?></a></h5>
-                            <span <?php if(in_array("Admin", $child_reply['reply_author']['user_tags'])): ?>class="badge badge-outline-primary"<?php endif; ?>><?= $child_reply['reply_author']['user_tags'][0]; ?></span>
-                          </div>
-                          <div class="comment-action">
-                            <div class="dropdown float-right">
-                              <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-chevron-down"></i></a>
-                              <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#">Moderate</a>
-                                <a class="dropdown-item" href="#">Embed</a>
-                                <a class="dropdown-item" href="#">Report</a>
-                                <a class="dropdown-item" href="#">Mark as spam</a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <?= $child_reply['reply_content']; ?>
-                        <div class="comment-footer">
-                          <ul>
-                            <li><a href="#"><i class="fa fa-heart-o"></i> Like</a></li>
-							<li><button class="reply-child-btn" onClick="new child_reply('<?= $https; ?>', '<?= $https . '/forum/thread/' . $data['thread']['thread_id'] . '/' . $data['thread']['thread_url_title'] . '/?action=create_child'; ?>', '<?= ucfirst($child_reply['reply_author']['user_username']); ?>', '<?php echo $_SESSION[Config::get('session/token_name')]; ?>', '<?= $reply['reply_id']; ?>')"><i class="icon-reply"></i> Reply</button></li>
-							<li><a href="#"><i class="fa fa-clock-o"></i> <?= $child_reply['adjusted_time']; ?></a></li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-					<?php endforeach; ?>
-                </ul>
-				  <div id="comment-<?= $reply['reply_id']; ?>"></div>
-              </li>
-			 <?php endforeach; ?>
+                <div>#<?= $x + 2; ?> <span><?= $reply[$x]['reply_date']['month'] . ' ' . $reply[$x]['reply_date']['day'] . ', ' . $reply[$x]['reply_date']['year']; ?></span><span><?= $reply[$x]['adjusted_time']; ?></span></div>
+              </div>
+              <div class="forum-body">
+                <p><?= $reply[$x]['reply_content']; ?></p>
+              </div>
+            </li>
+			  <?php
+			  $x++;
+			  endforeach; ?>
           </ul>
 
           <!--<nav aria-label="Page navigation">
@@ -213,7 +166,6 @@
             </ul>
           </nav>-->
         </div>
-		  </div>
       </div>
     </div>
   </section>

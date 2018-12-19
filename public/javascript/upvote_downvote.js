@@ -24,20 +24,36 @@ var ldButton = function (post_type, button_id, btn_type, update_field_id, post_i
             data = data.split(",");
 			var field_id = update_field_id.split("#");
 			
-			var updated_field = Number(document.getElementById(field_id[1]).textContent);
+			var dump = document.getElementById(field_id[1]).textContent;
+			dump = Number(dump);
+			
+			var updated_field = dump;
 			console.log(data);
-			if(data[1] == '"upvote"')
+			if(data[2] == '"upvote"')
 			{
-				updated_field = parseInt(data[3]);
-
+				if(data[1] == "false")
+				{
+					updated_field = dump + 1;
+				}
+				else if(data[1] == "true")
+				{
+					
+				}
+				else
+				{
+					console.log("Uh Oh data[1] returned something other than true or false");
+				}
 			}
-			else if(data[1] == '"downvote"')
+			else if(data[2] == '"downvote"')
 			{	
-				updated_field = parseInt(data[3]);
+				if(data[1] == "false")
+				{
+					updated_field = dump - 1;
+				}
 			}
 			else
 			{
-				updated_field = data[3];	
+				updated_field = updated_field;	
 			}
             // Update the data on the website
             $(update_field_id).text(updated_field);

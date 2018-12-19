@@ -131,6 +131,8 @@ CREATE TABLE forum_thread
     thread_content		LONGTEXT		NOT NULL,
     thread_date			DATETIME		NOT NULL,
     thread_modTime		DATETIME		NULL,
+    thread_upvotes		INT				DEFAULT 0,
+    thread_downvotes	INT				DEFAULT 0,
     
     CONSTRAINT forum_thread_user_id_fk
 		FOREIGN KEY(user_id)
@@ -145,7 +147,6 @@ CREATE TABLE forum_replies
 	reply_id		INT				PRIMARY KEY		AUTO_INCREMENT,
     thread_id		INT 			NOT NULL,
     user_id			INT				NOT NULL,
-    reply_parent_id INT				DEFAULT 0,
     reply_author	VARCHAR(45)		NOT NULL,
     reply_content	VARCHAR(250)	NOT NULL,
     reply_date		DATETIME		NOT NULL,
@@ -313,26 +314,6 @@ CREATE TABLE user_avatars
 		FOREIGN KEY(user_id)
         REFERENCES users(user_id)
 );
-
-DELIMITER //
-CREATE FUNCTION getUpvotes(param_thread_id INT)
-RETURNS INT
-BEGIN
-	DECLARE upvotes INT;
-	SELECT SUM(upvoted) INTO upvotes FROM forum_upvote_downvote WHERE thread_id = param_thread_id;
-    RETURN upvotes;
-END //
-DELIMITER ;
-
-DELIMITER //
-CREATE FUNCTION getDownvotes(param_thread_id INT)
-RETURNS INT
-BEGIN
-	DECLARE downvotes INT;
-	SELECT SUM(downvoted) INTO downvotes FROM forum_upvote_downvote WHERE thread_id = param_thread_id;
-    RETURN downvotes;
-END //
-DELIMITER ;
 
 INSERT INTO article_system(article_system_id, article_system_name) VALUES
 (1, 'Kriekon');

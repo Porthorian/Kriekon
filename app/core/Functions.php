@@ -134,11 +134,7 @@ class Functions {
 								$months = round($days / 30.4166667);
 								$remainder_days = round(30.4166667 / $months);
 							}
-							
-							if($months == 1)
-								$time_past = $months . ' Month & ' . $remainder_days . ' Days Ago';
-							else
-								$time_past = $months . ' Months & ' . $remainder_days . ' Days Ago';
+							$time_past = $months . ' Months & ' . $remainder_days . ' Days Ago';
 						}
 						else
 						{
@@ -196,57 +192,65 @@ class Functions {
 		$month = '';
 		$short = '';
 		
-		switch($date['month']) 
+		if($date['month'] == '1')
 		{
-			case '1':
-				$month = 'January';
-				$short = 'JAN';
-				break;
-			case '2':
-				$month = 'Feburary';
-				$short = 'FEB';
-				break;
-			case '3':
-				$month = "March";
-				$short = 'MAR';
-				break;
-			case '4':
-				$month = "April";
-				$short = "APR";
-				break;
-			case '5':
-				$month = "May";
-				$short = 'MAY';
-				break;
-			case '6':
-				$month = "June";
-				$short = "JUNE";
-				break;
-			case '7':
-				$month = "July";
-				$short = "JULY";
-				break;
-			case '8':
-				$month = "August";
-				$short = "AUG";
-				break;
-			case '9':
-				$month = "September";
-				$short = "SEPT";
-				break;
-			case '10':
-				$month = "October";
-				$short = "OCT";
-				break;
-			case '11':
-				$month = "November";
-				$short = "NOV";
-				break;
-			case '12':
-				$month = "December";
-				$short = "DEC";
-				break;
-				
+			$month = 'January';
+			$short = 'JAN';
+		}
+		elseif($date['month'] == '2')
+		{
+			$month = 'Feburary';
+			$short = 'FEB';
+		}
+		elseif($date['month'] == '3')
+		{
+			$month = 'March';
+			$short = 'MAR';
+		}
+		elseif($date['month'] == '4')
+		{
+			$month = 'April';
+			$short = 'APR';
+		}
+		elseif($date['month'] == '5')
+		{
+			$month = 'May';
+			$short = 'MAY';
+		}
+		elseif($date['month'] == '6')
+		{
+			$month = 'June';
+			$short = 'JUNE';
+		}
+		elseif($date['month'] == '7')
+		{
+			$month = 'July';
+			$short = 'JULY';
+		}
+		elseif($date['month'] == '8')
+		{
+			$month = 'August';
+			$short = 'AUG';
+		}
+		elseif($date['month'] == '9')
+		{
+			$month = 'September';
+			$short = 'SEPT';
+		}
+		elseif($date['month'] == '10')
+		{
+			$month = 'October';
+			$short = 'OCT';
+		}
+		elseif($date['month'] == '11')
+		{
+			$month = 'November';
+			$short = 'NOV';
+		}
+		elseif($date['month'] == '12')
+		{
+			$month = 'December';
+			$short = 'DEC';
 		}
 		
 		$dateArray = array('year'=>$date['year'],
